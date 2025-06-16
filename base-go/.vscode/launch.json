@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/work2"
+            "program": "${workspaceFolder}/work4"
         }
     ]
 }
