@@ -22,7 +22,6 @@ func longestCommonPrefix(strs []string) string {
 		}
 	}
 	return result
-
 }
 func allCharsEqual(s string) bool {
 	if len(s) == 0 {
