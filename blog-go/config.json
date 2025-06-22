@@ -1,0 +1,4 @@
+{
+    "secretKey": "abcd",
+    "sqliteName": "test.db"
+}
