@@ -58,5 +58,6 @@ func Login(c *gin.Context, user entity.User) error {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return err
 	}
-	// 剩下的逻辑...
+	c.JSON(http.StatusOK, gin.H{"token": tokenString, "user": storedUser})
+	return nil
 }

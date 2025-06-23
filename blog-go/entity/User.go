@@ -11,6 +11,6 @@ type User struct {
 	Email    string `gorm:"unique;not null"`
 }
 
-func createUser(db *gorm.DB, user *User) error {
+func CreateUser(db *gorm.DB, user *User) error {
 	return db.Create(user).Error
 }
