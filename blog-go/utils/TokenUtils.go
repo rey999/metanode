@@ -5,20 +5,20 @@ import (
 	"blog/entity"
 	"fmt"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte(config.ConfigData.SecretKey) // 签名密钥，应与生成 token 时使用的密钥一致
+// var jwtSecret = []byte(config.ConfigData.SecretKey) // 签名密钥，应与生成 token 时使用的密钥一致
 
 func ParseToken(c *gin.Context) (*jwt.Token, error) {
 	tokenString := GetToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// 验证签名算法是否符合预期（例如 HMAC-SHA）
+		// 确保签名方法是 HS256
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return jwtSecret, nil
+		return []byte(config.ConfigData.SecretKey), nil
 	})
 
 	if err != nil {
@@ -50,13 +50,13 @@ func GetUserByToken(c *gin.Context) (*entity.User, error) {
 	if !ok {
 		return nil, fmt.Errorf("invalid token claims")
 	}
-	id, ok := claims["id"].(uint)
+	id, ok := claims["id"].(float64)
 	if !ok {
 		return nil, fmt.Errorf("invalid token claims")
 	}
 	user := entity.User{}
-	user.ID = id
-	user.username = username
+	user.ID = uint(id)
+	user.Username = username
 	return &user, nil
 
 }

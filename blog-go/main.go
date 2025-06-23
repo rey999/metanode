@@ -8,7 +8,7 @@ import (
 
 func main() {
 	println("Hello, blog!")
-	common.InitDB()
 	config.LoadConfig()
+	common.InitDB()
 	server.RunServer()
 }

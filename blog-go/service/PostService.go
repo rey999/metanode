@@ -1,6 +1,7 @@
 package service
 
 import (
+	"blog/common"
 	"blog/entity"
 	"blog/utils"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 )
 
 func CreatePost(c *gin.Context, post entity.Post) error {
-
+	db := common.GetDB()
 	// 获取当前用户
 	user, err := utils.GetUserByToken(c)
 	if err != nil {
@@ -29,6 +30,7 @@ func CreatePost(c *gin.Context, post entity.Post) error {
 }
 
 func GetPostById(c *gin.Context, id uint) (error, post *entity.Post) {
+	db := common.GetDB()
 	post, err := entity.GetPostById(id, db)
 	if err != nil {
 		return error, nil
@@ -37,6 +39,7 @@ func GetPostById(c *gin.Context, id uint) (error, post *entity.Post) {
 	return nil, error
 }
 func UpdatePost(c *gin.Context, post entity.Post) error {
+	db := common.GetDB()
 	if post.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid post ID"})
 		return fmt.Errorf("id is required")
@@ -66,6 +69,7 @@ func UpdatePost(c *gin.Context, post entity.Post) error {
 }
 
 func DeletePost(c *gin.Context) error {
+	db := common.GetDB()
 	user, _ := utils.GetUserByToken(c)
 	id := c.Param("id")
 	var post entity.Post
@@ -85,6 +89,7 @@ func DeletePost(c *gin.Context) error {
 }
 
 func ListPosts(c *gin.Context) (error, []entity.Post) {
+	db := common.GetDB()
 	posts, err := entity.ListPosts(db)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to list posts"})

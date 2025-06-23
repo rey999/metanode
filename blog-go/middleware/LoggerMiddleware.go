@@ -5,6 +5,7 @@ import (
 	"blog/entity"
 	"blog/utils"
 	"bytes"
+	"fmt"
 	"io"
 	"time"
 
@@ -50,7 +51,13 @@ func LoggerMiddleware() gin.HandlerFunc {
 			return
 		}
 		responseBody := w.body.String()
-
-		db.Create(&entity.Log{UserID: user.ID, InParams: string(body), OutParameter: responseBody, Time: latencyString, Url: c.Request.URL.Path})
+		var userId uint = 0
+		if user != nil {
+			userId = user.ID
+		}
+		if err := db.Create(&entity.Log{UserID: uint(userId), InParams: string(body), OutParameter: responseBody, Time: latencyString, Url: c.Request.URL.Path}).Error; err != nil {
+			fmt.Println(err)
+			c.JSON(400, gin.H{"error": "Failed to create log"})
+		}
 	}
 }

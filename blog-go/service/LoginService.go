@@ -4,17 +4,16 @@ import (
 	"blog/common"
 	"blog/config"
 	"blog/entity"
+	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 // 获取数据库连接
-var db *gorm.DB = common.GetDB()
 
 func Register(c *gin.Context, user entity.User) error {
 	// 加密密码
@@ -25,7 +24,8 @@ func Register(c *gin.Context, user entity.User) error {
 	}
 	user.Password = string(hashedPassword)
 
-	if err := db.Create(&user).Error; err != nil {
+	if err := common.GetDB().Create(&user).Error; err != nil {
+		fmt.Println("Failed to create user:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return err
 	}
@@ -33,7 +33,7 @@ func Register(c *gin.Context, user entity.User) error {
 }
 
 func Login(c *gin.Context, user entity.User) error {
-
+	db := common.GetDB()
 	var storedUser entity.User
 	if err := db.Where("username = ?", user.Username).First(&storedUser).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
